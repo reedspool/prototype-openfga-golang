@@ -1,0 +1,15 @@
+#!/bin/env bash
+
+# 'devdir' is an arbitray name to bind the local development directory
+# into the docker container of the running CLI
+#
+# The network name is created by `docker compose` by the directory name.
+# You can find it after `docker compose up` with
+#   `docker network ls | grep openfga`
+# where `openfga` in that `grep` is the network name in the `docker-compose.yml`
+docker run \
+	--mount type=bind,src=.,dst=/devdir \
+	-it \
+	--network=openfga-prototype_openfga \
+	openfga/cli \
+	--config /devdir/local.fga.yaml "$@"
