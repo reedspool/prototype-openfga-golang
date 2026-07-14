@@ -1,0 +1,171 @@
+---
+# You can use `tuples`, `tuple_file`, and `tuple_files` together or individually to provide global tuples for all tests.
+# Example using a single tuple file:
+# tuple_file: ./tuples.yaml
+# Example using multiple tuple files:
+# tuple_files:
+#   - ./model_tuples_2.yaml
+#   - ./model_tuples_3.yaml
+name: Prototype AuthZ Model Tests
+
+model_file: ./model.fga
+
+tuples: # global tuples that would apply to all tests, optional
+  - user: account:arthur
+    relation: owner_account
+    object: stack:arthur_one
+  - user: account:arthur
+    relation: owner_account
+    object: layer:arthur_in_stack_one
+  - user: stack:arthur_one
+    relation: within
+    object: layer:arthur_in_stack_one
+  - user: account:arthur
+    relation: owner_account
+    object: layer:arthur_not_in_stack
+
+tests: # required
+  - name: account owns their stack
+    # No tuples specific to this test
+    check:
+      - user: account:arthur
+        object: stack:arthur_one
+        assertions:
+          owner_account: true
+          can_view: true
+          can_edit: true
+          can_share: true
+          can_delete: true
+
+  - name: account owns a layer in no stack
+    # No tuples specific to this test
+    check:
+      - user: account:arthur
+        object: layer:arthur_not_in_stack
+        assertions:
+          within: false
+          owner_account: true
+          can_view: true
+          can_edit: true
+          can_share: true
+          can_delete: true
+
+  - name: account owns a layer in a stack
+    # No tuples specific to this test
+    check:
+      - user: account:arthur
+        object: layer:arthur_not_in_stack
+        assertions:
+          within: false
+          owner_account: true
+          can_view: true
+          can_edit: true
+          can_share: true
+          can_delete: true
+
+  - name: layer within stack
+    # No tuples specific to this test
+    check:
+      - user: stack:arthur_one
+        object: layer:arthur_in_stack_one
+        assertions:
+          within: true
+          owner_account: false
+          can_view: true # Stack can view all layers within it
+          can_edit: false
+          can_share: true
+          can_delete: false
+
+  - name: user can share a stack (view) with another user
+    tuples:
+      - user: account:roland_received_stack_view
+        object: stack:arthur_one
+        relation: can_view
+    check:
+      - user: account:roland_received_stack_view
+        object: stack:arthur_one
+        assertions:
+          owner_account: false
+          can_view: true # Stack can view all layers within it
+          can_edit: false
+          can_share: true
+          can_delete: false
+
+  - name: user can share a stack (edit) with another user
+    tuples:
+      - user: account:ruth_received_stack_edit
+        object: stack:arthur_one
+        relation: can_edit
+    check:
+      - user: account:ruth_received_stack_edit
+        object: stack:arthur_one
+        assertions:
+          owner_account: false
+          can_view: true # Stack can view all layers within it
+          can_edit: true
+          can_share: true
+          can_delete: false
+
+  - name: user can share a layer (view) with another user
+    tuples:
+      - user: account:roger_received_layer_view
+        object: layer:arthur_in_stack_one
+        relation: can_view
+    check:
+      - user: account:roger_received_layer_view
+        object: layer:arthur_in_stack_one
+        assertions:
+          owner_account: false
+          can_view: true
+          can_edit: false
+          can_share: true
+          can_delete: false
+
+  - name: user can share a layer (edit) with another user
+    tuples:
+      - user: account:ruth_received_layer_edit
+        object: layer:arthur_one
+        relation: can_edit
+    check:
+      - user: account:ruth_received_layer_edit
+        object: layer:arthur_one
+        assertions:
+          owner_account: false
+          can_view: true # Layer can view all layers within it
+          can_edit: true
+          can_share: true
+          can_delete: false
+
+  - name: when stack shared (view), can view all layers within
+    tuples:
+      - user: account:robert_received_stack_view
+        object: stack:arthur_one
+        relation: can_view
+    check:
+      - user: account:robert_received_stack_view
+        object: layer:arthur_in_stack_one
+        assertions:
+          owner_account: false
+          can_view: true
+          can_edit: false
+          can_share: true
+          can_delete: false
+
+  - name: when stack shared (edit), can view (edit?!) all layers within
+    tuples:
+      - user: account:robert_received_stack_view
+        object: stack:arthur_one
+        relation: can_edit
+    check:
+      - user: account:robert_received_stack_view
+        object: layer:arthur_in_stack_one
+        assertions:
+          owner_account: false
+          can_view: true
+
+          # TODO: `can_edit: true` seems wrong
+          #
+          # Let's say Alice makes a layer and shares view perms with Bob. Then Bob makes a stack with Alice's layer. Bob shares edit perms for his stack with Charlie. Should Charlie be able to edit Alice's layer? No! Alice never gave edit permissions to anyone!
+          can_edit: false
+          can_share: true
+          can_delete: false

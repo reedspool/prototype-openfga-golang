@@ -8,10 +8,10 @@
 #   `docker network ls | grep openfga`
 # where `openfga` in that `grep` is the network name in the `docker-compose.yml`
 #
-# NOTE: This is supposed to be exactly the same as ./local-fga but
-# with NO --network
+# NOTE: This is supposed to be exactly the same as ./local-fga but WITH --network
 docker run \
 	--mount type=bind,src=.,dst=/devdir \
 	-t \
+	--network=openfga-prototype_openfga \
 	openfga/cli \
 	--config /devdir/local.fga.yaml "$@"

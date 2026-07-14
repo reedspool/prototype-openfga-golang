@@ -1,10 +1,24 @@
 model
   schema 1.1
 
-type user
+# Represents an account, for which many user logins might control
+type account
 
-type document
+type stack
   relations
-    define reader: [user]
-    define writer: [user]
-    define owner: [user]
+    define owner_account: [account] 
+
+    define can_edit: [account] or owner_account
+    define can_view: [account] or can_edit
+    define can_share: can_view
+    define can_delete: owner_account
+
+type layer
+  relations
+    define within: [stack]
+    define owner_account: [account]
+
+    define can_edit: [account] or owner_account 
+    define can_view: [account] or owner_account or within or can_view from within or can_edit
+    define can_share: can_view
+    define can_delete: owner_account
