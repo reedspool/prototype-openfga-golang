@@ -6,7 +6,7 @@ See [the entry in my wiki "Prototype OpenFGA with Recurse OAuth"](<~/tmpshare/pe
 
 <dl>
 
-<dt>[bin](./bin)</dt>
+<dt><a href="./bin">bin/</a></dt>
 <dd>Scripts to execute</dd>
 
 </dl>
