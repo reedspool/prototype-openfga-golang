@@ -1,6 +1,6 @@
 api-url: http://openfga:8080
-model-id: 01KXH0A3576F4S3R3FCEJM5BWA
-store-id: 01KXH097S9J724Q64GXJBWMBZY
+model-id: 01KXNZQ9BGDHVYZHSZP9XEPF6F
+store-id: 01KXNYZJ8QJJVHG9PXY9CFARBM
 
 # Auth stuff I'm not using yet
 # client-id: <...>

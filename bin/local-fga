@@ -14,4 +14,4 @@ docker run \
 	--mount type=bind,src=.,dst=/devdir \
 	-t \
 	openfga/cli \
-	--config /devdir/local.fga.yaml "$@"
+	--config /devdir/local.config.fga.yaml "$@"

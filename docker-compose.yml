@@ -4,10 +4,13 @@ networks:
 
 services:
   postgres:
-    image: postgres:17
+    image: postgres:18
     container_name: postgres
     networks:
       - openfga
+    volumes:
+      - type: volume
+        target: /var/lib/postgresql
     ports:
       - "5432:5432"
     environment:

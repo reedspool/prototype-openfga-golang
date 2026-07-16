@@ -8,7 +8,9 @@
 #   - ./model_tuples_3.yaml
 name: Prototype AuthZ Model Tests
 
-model_file: ./model.fga
+# Comment out to run tests against the configured server
+# Un-comment to run tests in local CLI with simulated server
+# model_file: ./model.fga
 
 tuples: # global tuples that would apply to all tests, optional
   - user: account:arthur
